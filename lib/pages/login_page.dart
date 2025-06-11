@@ -1,4 +1,5 @@
-import 'package:chat_app/pages/resgister_page.dart';
+import 'package:chat_app/helper/constants.dart';
+import 'package:chat_app/pages/chat_page.dart';
 import 'package:chat_app/widgts/custom_button.dart';
 import 'package:chat_app/widgts/custom_form_text_field.dart';
 import 'package:chat_app/helper/show_snak_bar.dart';
@@ -8,6 +9,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+  static String id = 'LoginPage';
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -24,14 +26,14 @@ class _LoginPageState extends State<LoginPage> {
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       child: Scaffold(
-        backgroundColor: Color(0xff2B475E),
+        backgroundColor: kPrimaryColor,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Form(
             key: formKey,
             child: ListView(
               children: [
-                Image.asset('assets/images/scholar.png', height: 200),
+                Image.asset(kLogo, height: 200),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -84,10 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                         UserCredential userCredential = await logingUser();
 
                         showSnakBar(context, 'Login successful!', Colors.green);
-                        Navigator.pushReplacementNamed(
-                          context,
-                          'ConversationsPage',
-                        );
+                        Navigator.pushReplacementNamed(context, ChatPage.id);
                         print("User logged in: ${userCredential.user?.email}");
                       } on FirebaseAuthException catch (e) {
                         String errorMessage = '';
