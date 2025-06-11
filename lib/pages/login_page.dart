@@ -84,6 +84,7 @@ class _LoginPageState extends State<LoginPage> {
                         UserCredential userCredential = await logingUser();
 
                         showSnakBar(context, 'Login successful!', Colors.green);
+                        Navigator.pushReplacementNamed(context, 'ChatPage');
                         print("User logged in: ${userCredential.user?.email}");
                       } on FirebaseAuthException catch (e) {
                         String errorMessage = '';
