@@ -1,11 +1,12 @@
 import 'package:chat_app/helper/constants.dart';
-import 'package:chat_app/pages/chat_page.dart';
+import 'package:chat_app/pages/chat_list_page.dart';
 import 'package:chat_app/pages/resgister_page.dart';
 import 'package:chat_app/widgts/custom_button.dart';
 import 'package:chat_app/widgts/custom_form_text_field.dart';
 import 'package:chat_app/helper/show_snak_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class LoginPage extends StatefulWidget {
@@ -75,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
                   },
                 ),
 
-                SizedBox(height: 20),
+                SizedBox(height: 15),
 
                 CustomButton(
                   text: 'LOGIN',
@@ -89,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                         showSnakBar(context, 'Login successful!', Colors.green);
                         Navigator.pushReplacementNamed(
                           context,
-                          ChatPage.id,
+                          ChatListPage.id,
                           arguments: email,
                         );
                         print("User logged in: ${userCredential.user?.email}");
@@ -138,6 +139,46 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 15),
 
+                // CustomButton(
+                //   text: 'Sign in with Phone',
+                //   onTap: () {
+                //     Navigator.pushNamed(context, 'PhoneLoginPage');
+                //   },
+                // ),
+                // const SizedBox(height: 15),
+                CustomButton(
+                  text: 'Sign in with Google',
+                  onTap: () async {
+                    try {
+                      final GoogleSignInAccount? googleUser =
+                          await GoogleSignIn().signIn();
+                      if (googleUser == null) return; // المستخدم لغى
+
+                      final GoogleSignInAuthentication googleAuth =
+                          await googleUser.authentication;
+
+                      final credential = GoogleAuthProvider.credential(
+                        accessToken: googleAuth.accessToken,
+                        idToken: googleAuth.idToken,
+                      );
+
+                      final userCredential = await FirebaseAuth.instance
+                          .signInWithCredential(credential);
+
+                      showSnakBar(context, 'Login successful!', Colors.green);
+                      Navigator.pushReplacementNamed(
+                        context,
+                        ChatListPage.id,
+                        arguments: userCredential.user!.email,
+                      );
+                    } catch (e) {
+                      showSnakBar(context, e.toString(), Colors.red);
+                      print('Google Sign-In Error: $e');
+                    }
+                  },
+                ),
+                const SizedBox(height: 20),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -146,8 +187,10 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(color: Colors.white),
                     ),
                     GestureDetector(
-                      onTap: () =>
-                          Navigator.pushNamed(context, ResgisterPage.id),
+                      onTap: () => Navigator.pushReplacementNamed(
+                        context,
+                        ResgisterPage.id,
+                      ),
                       child: Text(
                         ' Sign Up',
                         style: TextStyle(color: Color(0xffc7ede6)),

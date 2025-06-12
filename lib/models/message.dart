@@ -1,17 +1,12 @@
-import 'package:chat_app/helper/constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Message {
   final String message;
   final String id;
-  final String data;
 
-  Message(this.message, this.id, this.data);
+  Message({required this.message, required this.id});
 
-  factory Message.fromJson(jsonData) {
-    return Message(
-      jsonData[kMessages],
-      jsonData[kId],
-      jsonData[kCreatedAt].toString(),
-    );
+  factory Message.fromJson(DocumentSnapshot doc) {
+    return Message(message: doc['message'], id: doc['sender']);
   }
 }

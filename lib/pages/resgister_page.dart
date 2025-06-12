@@ -1,5 +1,5 @@
 import 'package:chat_app/helper/constants.dart';
-import 'package:chat_app/pages/chat_page.dart';
+import 'package:chat_app/pages/chat_list_page.dart';
 import 'package:chat_app/widgts/custom_button.dart';
 import 'package:chat_app/widgts/custom_form_text_field.dart';
 import 'package:chat_app/helper/show_snak_bar.dart';
@@ -93,9 +93,9 @@ class _ResgisterPageState extends State<ResgisterPage> {
                           'Account created successfully!',
                           Colors.green,
                         );
-                        Navigator.pushNamed(
+                        Navigator.pushReplacementNamed(
                           context,
-                          ChatPage.id,
+                          ChatListPage.id,
                           arguments: email,
                         );
                         print("User registered: ${userCredential.user?.uid}");
