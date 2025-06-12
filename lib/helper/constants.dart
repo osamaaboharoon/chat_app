@@ -14,3 +14,7 @@ const MaterialColor kPrimarySwatch = MaterialColor(0xffFFC700, <int, Color>{
   900: Color(0xFFFFB800),
 });
 const kLogo = 'assets/images/scholar.png';
+const kMessagesCollection = 'messages';
+const kMessages = 'message';
+const kCreatedAt = 'createdAt';
+const kId = 'id';

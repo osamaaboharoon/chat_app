@@ -93,7 +93,11 @@ class _ResgisterPageState extends State<ResgisterPage> {
                           'Account created successfully!',
                           Colors.green,
                         );
-                        Navigator.pushNamed(context, ChatPage.id);
+                        Navigator.pushNamed(
+                          context,
+                          ChatPage.id,
+                          arguments: email,
+                        );
                         print("User registered: ${userCredential.user?.uid}");
                       } on FirebaseAuthException catch (e) {
                         String errorMessage = '';

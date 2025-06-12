@@ -1,5 +1,6 @@
 import 'package:chat_app/helper/constants.dart';
 import 'package:chat_app/pages/chat_page.dart';
+import 'package:chat_app/pages/resgister_page.dart';
 import 'package:chat_app/widgts/custom_button.dart';
 import 'package:chat_app/widgts/custom_form_text_field.dart';
 import 'package:chat_app/helper/show_snak_bar.dart';
@@ -86,7 +87,11 @@ class _LoginPageState extends State<LoginPage> {
                         UserCredential userCredential = await logingUser();
 
                         showSnakBar(context, 'Login successful!', Colors.green);
-                        Navigator.pushReplacementNamed(context, ChatPage.id);
+                        Navigator.pushReplacementNamed(
+                          context,
+                          ChatPage.id,
+                          arguments: email,
+                        );
                         print("User logged in: ${userCredential.user?.email}");
                       } on FirebaseAuthException catch (e) {
                         String errorMessage = '';
@@ -142,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     GestureDetector(
                       onTap: () =>
-                          Navigator.pushNamed(context, 'ResgisterPage'),
+                          Navigator.pushNamed(context, ResgisterPage.id),
                       child: Text(
                         ' Sign Up',
                         style: TextStyle(color: Color(0xffc7ede6)),
