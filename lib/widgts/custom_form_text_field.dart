@@ -30,15 +30,17 @@ class _CustomFormTextFieldState extends State<CustomFormTextField> {
         return null;
       },
       onChanged: widget.onChanged,
-      style: TextStyle(color: Colors.white),
+      style: const TextStyle(
+        color: Colors.black87,
+      ), // ← لون النص داخل الـ input
       decoration: InputDecoration(
         hintText: widget.hintText,
-        hintStyle: TextStyle(color: Colors.white54),
+        hintStyle: const TextStyle(color: Colors.black45), // ← لون الـ hint
         suffixIcon: widget.isPassword
             ? IconButton(
                 icon: Icon(
                   _obscureText ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.white,
+                  color: Colors.grey[700],
                 ),
                 onPressed: () {
                   setState(() {
@@ -48,9 +50,12 @@ class _CustomFormTextFieldState extends State<CustomFormTextField> {
               )
             : null,
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
+          borderSide: const BorderSide(color: Colors.grey),
         ),
-        border: OutlineInputBorder(),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Theme.of(context).primaryColor),
+        ),
+        border: const OutlineInputBorder(),
       ),
     );
   }

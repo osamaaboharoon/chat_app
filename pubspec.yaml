@@ -42,6 +42,11 @@ dependencies:
 
   # UI & Other packages
   modal_progress_hud_nsn: ^0.5.1
+  flutter_launcher_icons: ^0.14.4
+  intl: ^0.20.2
+  firebase_messaging: ^15.2.7
+  dio: ^5.8.0+1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -84,3 +89,7 @@ flutter:
         - asset: assets/fonts/Pacifico-Regular.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "/images/scholar.png"

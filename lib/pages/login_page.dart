@@ -1,12 +1,12 @@
 import 'package:chat_app/helper/constants.dart';
-import 'package:chat_app/pages/chat_list_page.dart';
+import 'package:chat_app/pages/WhatsAppHomePage.dart';
 import 'package:chat_app/pages/resgister_page.dart';
+import 'package:chat_app/services/google_auth_service.dart';
 import 'package:chat_app/widgts/custom_button.dart';
 import 'package:chat_app/widgts/custom_form_text_field.dart';
 import 'package:chat_app/helper/show_snak_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class LoginPage extends StatefulWidget {
@@ -28,177 +28,108 @@ class _LoginPageState extends State<LoginPage> {
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       child: Scaffold(
-        backgroundColor: kPrimaryColor,
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Form(
-            key: formKey,
-            child: ListView(
-              children: [
-                Image.asset(kLogo, height: 200),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Form(
+              key: formKey,
+              child: ListView(
+                children: [
+                  const SizedBox(height: 40),
+                  Center(child: Image.asset(kLogo, height: 120)),
+                  const SizedBox(height: 20),
+                  const Center(
+                    child: Text(
                       'Chat App',
                       style: TextStyle(
-                        fontSize: 32,
-                        color: Colors.white,
-                        fontFamily: 'Pacifico',
+                        fontSize: 28,
+                        color: Color(0xff075E54),
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 50),
-
-                Row(
-                  children: [
-                    Text(
-                      'Sign In',
-                      style: TextStyle(fontSize: 24, color: Colors.white),
+                  ),
+                  const SizedBox(height: 40),
+                  const Text(
+                    'Sign In',
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: Color(0xff075E54),
+                      fontWeight: FontWeight.w600,
                     ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                CustomFormTextField(
-                  hintText: 'Email',
-                  onChanged: (data) {
-                    email = data;
-                  },
-                ),
-                const SizedBox(height: 10),
+                  ),
+                  const SizedBox(height: 20),
+                  CustomFormTextField(
+                    hintText: 'Email',
+                    onChanged: (data) => email = data,
+                  ),
+                  const SizedBox(height: 15),
+                  CustomFormTextField(
+                    hintText: 'Password',
+                    isPassword: true,
+                    onChanged: (data) => password = data,
+                  ),
+                  const SizedBox(height: 20),
+                  CustomButton(
+                    text: 'LOGIN',
+                    backgroundColor: const Color(0xff25D366),
+                    onTap: () async {
+                      if (formKey.currentState!.validate()) {
+                        setState(() => isLoading = true);
 
-                CustomFormTextField(
-                  hintText: 'Password',
-                  isPassword: true,
-                  onChanged: (data) {
-                    password = data;
-                  },
-                ),
-
-                SizedBox(height: 15),
-
-                CustomButton(
-                  text: 'LOGIN',
-                  onTap: () async {
-                    if (formKey.currentState!.validate()) {
-                      setState(() => isLoading = true);
-
-                      try {
-                        UserCredential userCredential = await logingUser();
-
-                        showSnakBar(context, 'Login successful!', Colors.green);
-                        Navigator.pushReplacementNamed(
-                          context,
-                          ChatListPage.id,
-                          arguments: email,
-                        );
-                        print("User logged in: ${userCredential.user?.email}");
-                      } on FirebaseAuthException catch (e) {
-                        String errorMessage = '';
-
-                        switch (e.code) {
-                          case 'user-not-found':
-                            errorMessage = 'No account found with this email.';
-                            break;
-                          case 'wrong-password':
-                            errorMessage =
-                                'Incorrect password. Please try again.';
-                            break;
-                          case 'invalid-credential':
-                            errorMessage = 'Invalid email or password.';
-                            break;
-                          case 'invalid-email':
-                            errorMessage =
-                                'The email address is badly formatted.';
-                            break;
-                          case 'too-many-requests':
-                            errorMessage =
-                                'Too many attempts. Please try again later.';
-                            break;
-                          default:
-                            errorMessage =
-                                'An unexpected error occurred. Please try again.';
+                        try {
+                          UserCredential userCredential = await logingUser();
+                          showSnakBar(
+                            context,
+                            'Login successful!',
+                            Colors.green,
+                          );
+                          Navigator.pushReplacementNamed(
+                            context,
+                            WhatsAppHomePage.id,
+                            arguments: email,
+                          );
+                        } on FirebaseAuthException catch (e) {
+                          String errorMessage;
+                          switch (e.code) {
+                            case 'user-not-found':
+                              errorMessage =
+                                  'No account found with this email.';
+                              break;
+                            case 'wrong-password':
+                              errorMessage = 'Incorrect password.';
+                              break;
+                            default:
+                              errorMessage = 'Login failed: ${e.message}';
+                          }
+                          showSnakBar(context, errorMessage, Colors.red);
                         }
 
-                        showSnakBar(context, errorMessage, Colors.red);
-
-                        print(errorMessage);
-                      } catch (e) {
-                        showSnakBar(
-                          context,
-                          'Unexpected error occurred.',
-                          Colors.red,
-                        );
-                        print('Unexpected error: $e');
+                        setState(() => isLoading = false);
                       }
-
-                      setState(() => isLoading = false);
-                    }
-                  },
-                ),
-                const SizedBox(height: 15),
-
-                // CustomButton(
-                //   text: 'Sign in with Phone',
-                //   onTap: () {
-                //     Navigator.pushNamed(context, 'PhoneLoginPage');
-                //   },
-                // ),
-                // const SizedBox(height: 15),
-                CustomButton(
-                  text: 'Sign in with Google',
-                  onTap: () async {
-                    try {
-                      final GoogleSignInAccount? googleUser =
-                          await GoogleSignIn().signIn();
-                      if (googleUser == null) return; // المستخدم لغى
-
-                      final GoogleSignInAuthentication googleAuth =
-                          await googleUser.authentication;
-
-                      final credential = GoogleAuthProvider.credential(
-                        accessToken: googleAuth.accessToken,
-                        idToken: googleAuth.idToken,
-                      );
-
-                      final userCredential = await FirebaseAuth.instance
-                          .signInWithCredential(credential);
-
-                      showSnakBar(context, 'Login successful!', Colors.green);
-                      Navigator.pushReplacementNamed(
-                        context,
-                        ChatListPage.id,
-                        arguments: userCredential.user!.email,
-                      );
-                    } catch (e) {
-                      showSnakBar(context, e.toString(), Colors.red);
-                      print('Google Sign-In Error: $e');
-                    }
-                  },
-                ),
-                const SizedBox(height: 20),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'don\'t have an account',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    GestureDetector(
-                      onTap: () => Navigator.pushReplacementNamed(
-                        context,
-                        ResgisterPage.id,
+                    },
+                  ),
+                  const SizedBox(height: 15),
+                  const GoogleRegisterButton(),
+                  const SizedBox(height: 25),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Don\'t have an account?'),
+                      TextButton(
+                        onPressed: () => Navigator.pushReplacementNamed(
+                          context,
+                          ResgisterPage.id,
+                        ),
+                        child: const Text(
+                          'Sign Up',
+                          style: TextStyle(color: Color(0xff075E54)),
+                        ),
                       ),
-                      child: Text(
-                        ' Sign Up',
-                        style: TextStyle(color: Color(0xffc7ede6)),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -207,8 +138,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<UserCredential> logingUser() async {
-    UserCredential userCredential = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email!, password: password!);
-    return userCredential;
+    return await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: email!,
+      password: password!,
+    );
   }
 }

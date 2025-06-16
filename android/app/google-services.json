@@ -48,6 +48,58 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:43479692933:android:f5608b7c08a84443399bec",
+        "android_client_info": {
+          "package_name": "com.osama.chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "43479692933-6n3raqlvr39qt7oqg42mkku4oup1176v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.osama.chatapp",
+            "certificate_hash": "b9ed32cdadcf85081169c37ce67abb80f8f54a98"
+          }
+        },
+        {
+          "client_id": "43479692933-vhfv1shk9tv00bh1vcn1k054gihoob26.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.osama.chatapp",
+            "certificate_hash": "dc7de2f51561851b88a75aac1c59ed03fc83f429"
+          }
+        },
+        {
+          "client_id": "43479692933-ieolop6q5e7nprl21lfd8ofi28eb3vq2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEtAlMgFA_xB_7bnyq7cLl6tNlsACJ3U4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "43479692933-ieolop6q5e7nprl21lfd8ofi28eb3vq2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "43479692933-s5q8ofkccppasaif536bp8kac32i4jd2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.chatApp"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

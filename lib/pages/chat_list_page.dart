@@ -12,26 +12,14 @@ class ChatListPage extends StatefulWidget {
 
 class _ChatListPageState extends State<ChatListPage> {
   late String currentUserEmail;
-  final TextEditingController _emailController = TextEditingController();
 
-  @override
   @override
   Widget build(BuildContext context) {
     currentUserEmail = ModalRoute.of(context)!.settings.arguments as String;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Chats'),
-        backgroundColor: Colors.blue.shade700,
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: _logout,
-            tooltip: 'Logout',
-          ),
-        ],
-      ),
+      backgroundColor: Color(0xFFF0F0F0),
+
       body: Column(
         children: [
           Expanded(
@@ -50,7 +38,12 @@ class _ChatListPageState extends State<ChatListPage> {
                 final chats = snapshot.data!.docs;
 
                 if (chats.isEmpty) {
-                  return Center(child: Text('No chats yet'));
+                  return Center(
+                    child: Text(
+                      'No chats yet',
+                      style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+                    ),
+                  );
                 }
 
                 return ListView.builder(
@@ -62,43 +55,60 @@ class _ChatListPageState extends State<ChatListPage> {
                     final chatId = chat['chatId'];
                     final lastMessage = chat['lastMessage'] ?? '';
 
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(color: Colors.grey.shade300),
-                      ),
-                      elevation: 2,
-                      margin: const EdgeInsets.symmetric(vertical: 6),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.blue.shade600,
-                          child: Icon(Icons.person, color: Colors.white),
-                        ),
-                        title: Text(
-                          otherUserEmail,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(
-                          lastMessage,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red.shade400),
-                          onPressed: () => _confirmDeleteChat(chatId),
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => ChatDetailPage(
-                                currentUserEmail: currentUserEmail,
-                                otherUserEmail: otherUserEmail,
-                                chatId: chatId,
+                    return Center(
+                      child: SizedBox(
+                        width: 360,
+                        child: Card(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          elevation: 1,
+                          margin: const EdgeInsets.symmetric(vertical: 6),
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 24,
+                              child: Icon(
+                                Icons.person,
+                                color: Color(0xFF25D366),
                               ),
                             ),
-                          );
-                        },
+                            title: Text(
+                              otherUserEmail,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            subtitle: Text(
+                              lastMessage,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(color: Colors.grey[700]),
+                            ),
+                            trailing: IconButton(
+                              icon: Icon(
+                                Icons.delete,
+                                color: Colors.red.shade400,
+                              ),
+                              onPressed: () => _confirmDeleteChat(chatId),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ChatDetailPage(
+                                    currentUserEmail: currentUserEmail,
+                                    otherUserEmail: otherUserEmail,
+                                    chatId: chatId,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -106,99 +116,10 @@ class _ChatListPageState extends State<ChatListPage> {
               },
             ),
           ),
-          Divider(),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      hintText: 'Enter email to start chat',
-                      filled: true,
-                      fillColor: Colors.grey.shade100,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide(color: Colors.grey.shade300),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide(color: Colors.blue),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: () => _startChat(_emailController.text.trim()),
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    backgroundColor: Colors.blue.shade700,
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  ),
-                  child: Text('Start', style: TextStyle(color: Colors.white)),
-                ),
-              ],
-            ),
-          ),
+          Divider(height: 1),
         ],
       ),
     );
-  }
-
-  Future<void> _startChat(String otherEmail) async {
-    if (otherEmail.isEmpty || otherEmail == currentUserEmail) return;
-
-    final chatId = _generateChatId(currentUserEmail, otherEmail);
-
-    final chatData = {
-      'chatId': chatId,
-      'participant': otherEmail,
-      'lastMessage': '',
-      'createdAt': FieldValue.serverTimestamp(),
-    };
-
-    // Create chat for current user
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(currentUserEmail)
-        .collection('chats')
-        .doc(chatId)
-        .set(chatData);
-
-    // Create chat for other user
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(otherEmail)
-        .collection('chats')
-        .doc(chatId)
-        .set({...chatData, 'participant': currentUserEmail});
-
-    _emailController.clear();
-
-    // Navigate to chat screen
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ChatDetailPage(
-          currentUserEmail: currentUserEmail,
-          otherUserEmail: otherEmail,
-          chatId: chatId,
-        ),
-      ),
-    );
-  }
-
-  String _generateChatId(String email1, String email2) {
-    final sortedEmails = [email1, email2]..sort();
-    return sortedEmails.join('_');
   }
 
   void _confirmDeleteChat(String chatId) {
@@ -223,7 +144,6 @@ class _ChatListPageState extends State<ChatListPage> {
                   .doc(chatId)
                   .delete();
 
-              // لو عايز تمسح كمان الرسائل نفسها من collection messages:
               final messagesRef = FirebaseFirestore.instance
                   .collection('chats')
                   .doc(chatId)
