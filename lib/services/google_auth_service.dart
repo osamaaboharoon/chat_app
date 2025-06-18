@@ -1,3 +1,4 @@
+import 'package:chat_app/helper/fcm.dart';
 import 'package:chat_app/helper/show_snak_bar.dart';
 import 'package:chat_app/pages/WhatsAppHomePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -37,7 +38,7 @@ class _GoogleRegisterButtonState extends State<GoogleRegisterButton> {
               try {
                 UserCredential userCredential = await signInWithGoogle();
                 final googleEmail = userCredential.user?.email ?? '';
-
+                await saveFCMToken(googleEmail);
                 showSnakBar(context, 'Logged in with Google!', Colors.green);
                 Navigator.pushReplacementNamed(
                   context,

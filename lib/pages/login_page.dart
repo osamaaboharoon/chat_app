@@ -1,4 +1,5 @@
 import 'package:chat_app/helper/constants.dart';
+import 'package:chat_app/helper/fcm.dart';
 import 'package:chat_app/pages/WhatsAppHomePage.dart';
 import 'package:chat_app/pages/resgister_page.dart';
 import 'package:chat_app/services/google_auth_service.dart';
@@ -79,6 +80,7 @@ class _LoginPageState extends State<LoginPage> {
 
                         try {
                           UserCredential userCredential = await logingUser();
+                          await saveFCMToken(email!);
                           showSnakBar(
                             context,
                             'Login successful!',

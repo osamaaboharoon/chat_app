@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'chat_detail_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class ChatListPage extends StatefulWidget {
   static String id = 'ChatListPage';
@@ -158,10 +157,5 @@ class _ChatListPageState extends State<ChatListPage> {
         ],
       ),
     );
-  }
-
-  void _logout() async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
   }
 }

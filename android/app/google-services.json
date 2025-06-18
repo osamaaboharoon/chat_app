@@ -58,14 +58,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "43479692933-6n3raqlvr39qt7oqg42mkku4oup1176v.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.osama.chatapp",
-            "certificate_hash": "b9ed32cdadcf85081169c37ce67abb80f8f54a98"
-          }
-        },
-        {
           "client_id": "43479692933-vhfv1shk9tv00bh1vcn1k054gihoob26.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

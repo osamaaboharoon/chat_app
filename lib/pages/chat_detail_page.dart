@@ -1,3 +1,5 @@
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:chat_app/helper/constants.dart';
 import 'package:chat_app/models/message.dart';
 import 'package:chat_app/widgts/chat_buble.dart';
@@ -48,6 +50,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
     _messageController.clear();
 
+    // 1. احفظ الرسالة في Firestore
     await FirebaseFirestore.instance
         .collection('messages')
         .doc(widget.chatId)
@@ -66,6 +69,41 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       duration: Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
+
+    // 2. جب التوكن الخاص بالمستلم
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.otherUserEmail)
+        .get();
+
+    final fcmToken = userDoc.data()?['fcmToken'];
+    if (fcmToken == null) return;
+
+    // 3. ابعت طلب POST للسيرفر المحلي
+    final uri = Uri.parse(
+      'https://grateful-reflection-production.up.railway.app/sendNotification',
+    ); // Emulator
+    // لو حتنشره لاحقًا على استضافة هتغير الرابط ده
+
+    try {
+      final response = await http.post(
+        uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'toToken': fcmToken,
+          'title': widget.currentUserEmail,
+          'body': text,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print('Notification sent ✅');
+      } else {
+        print('Notification failed ❌: ${response.body}');
+      }
+    } catch (e) {
+      print('Notification error ⚠️: $e');
+    }
   }
 
   @override

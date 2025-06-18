@@ -5,12 +5,34 @@ import 'package:chat_app/pages/login_page.dart';
 import 'package:chat_app/pages/privacy_policy_page.dart';
 import 'package:chat_app/pages/resgister_page.dart';
 import 'package:chat_app/pages/settings_page.dart';
+import 'package:chat_app/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  showFlutterNotification(message); // تظهر الإشعار حتى لو التطبيق بالخلفية
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  await setupFlutterNotifications();
+
+  // طلب صلاحية الإشعارات (مرّة واحدة فقط)
+  await FirebaseMessaging.instance.requestPermission();
+
+  // استقبال الرسائل أثناء فتح التطبيق
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    if (message.notification != null) {
+      showFlutterNotification(message);
+    }
+  });
+
   runApp(const ChatApp());
 }
 
