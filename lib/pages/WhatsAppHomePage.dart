@@ -38,7 +38,7 @@ class _WhatsAppHomePageState extends State<WhatsAppHomePage>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
-        title: const Text('WhatsApp'),
+        title: const Text('Chat App'),
         bottom: TabBar(
           controller: _tabController,
           tabs: const [

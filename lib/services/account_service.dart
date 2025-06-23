@@ -14,18 +14,17 @@ class AccountService {
     if (user == null) return;
 
     try {
-      // 1) امسح بيانات Firestore الخاصة بالمستخدم
-      await _firestore.collection('users').doc(user.uid).delete();
+      // ✅ 1) امسح بيانات Firestore باستخدام الإيميل كمفتاح
+      await _firestore.collection('users').doc(user.email).delete();
 
-      // 2) امسح حساب Auth
+      // ✅ 2) احذف حساب Firebase Auth
       await user.delete();
 
-      // 3) توجّه لصفحة البداية / تسجيل الدخول
+      // ✅ 3) انتقل إلى صفحة تسجيل الدخول
       Navigator.of(context).pushNamedAndRemoveUntil('/login', (_) => false);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {
-        // افتح صفحة إعادة المصادقة، وبمجرد نجاحها
-        // ارجع ونفّذ الحذف مرة أخرى
+        // إذا احتاج تسجيل دخول مجدد
         Navigator.push(
           context,
           MaterialPageRoute(

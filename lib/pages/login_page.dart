@@ -7,6 +7,7 @@ import 'package:chat_app/widgts/custom_button.dart';
 import 'package:chat_app/widgts/custom_form_text_field.dart';
 import 'package:chat_app/helper/show_snak_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -22,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   String? email;
   String? password;
   bool isLoading = false;
-  GlobalKey<FormState> formKey = GlobalKey();
+  final GlobalKey<FormState> formKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -76,16 +77,27 @@ class _LoginPageState extends State<LoginPage> {
                     backgroundColor: const Color(0xff25D366),
                     onTap: () async {
                       if (formKey.currentState!.validate()) {
+                        // إغلاق الكيبورد
+                        FocusScope.of(context).unfocus();
                         setState(() => isLoading = true);
 
                         try {
+                          // حذف التوكن السابق للمستخدم السابق
+                          await FirebaseMessaging.instance.deleteToken();
+
+                          // تسجيل الدخول
                           UserCredential userCredential = await logingUser();
+
+                          // حفظ توكن المستخدم الحالي
                           await saveFCMToken(email!);
+
                           showSnakBar(
                             context,
                             'Login successful!',
                             Colors.green,
                           );
+
+                          // الانتقال للصفحة الرئيسية
                           Navigator.pushReplacementNamed(
                             context,
                             WhatsAppHomePage.id,

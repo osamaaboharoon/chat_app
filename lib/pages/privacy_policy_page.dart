@@ -19,27 +19,47 @@ class PrivacyPolicyPage extends StatelessWidget {
           child: Text('''
 Privacy Policy for ChatApp
 
-Last updated: 12 June 2025
+Last updated: 23 June 2025
 
-ChatApp is a chat application developed by Osama Farrag (o.haroon111@gmail.com / 01154060470). We respect your privacy and are committed to protecting your personal data.
+ChatApp is a chat application developed by Osama Farrag (o.haroon111@gmail.com). We respect your privacy and are committed to protecting your personal data.
 
 1. Data Collection:
-We collect and store the email addresses and display names used for login via Firebase Authentication. No other personal data is collected or stored locally on the device.
+We collect and store the following data:
+- Email address used for login (via Firebase Authentication)
+- Firebase Cloud Messaging (FCM) token for delivering notifications
+
+This data is stored securely in Firebase Firestore.
 
 2. Data Usage:
-Collected data is used solely for enabling user login, identifying chat participants, and managing messages using Firebase. We do not sell, share, or expose your data to third parties.
+The collected data is used only for:
+- Enabling user login and authentication
+- Identifying chat participants
+- Sending push notifications via Firebase and external server (Railway)
 
-3. Data Deletion:
-Users can request account deletion by contacting us at o.haroon111@gmail.com or 01154060470. We will delete the account and its associated data from Firebase upon request.
+We do **not** sell, rent, or share your data with third parties.
 
-4. Account Logout:
-Users can log out of the application, which ends their session locally.
+3. Notifications:
+To provide real-time chat notifications, we collect your FCM token and send it to Firebase and our secure external server (https://railway.app). This is only used for delivering messages between users.
 
-5. Third-party Services:
-This app uses Firebase services (Authentication, Firestore). Their privacy policies can be reviewed at https://firebase.google.com/support/privacy.
+4. Data Deletion:
+You may request to delete your account and data by contacting us at o.haroon111@gmail.com. We will delete your data from Firebase Authentication and Firestore within 7 days of request.
 
-6. Contact Us:
-If you have questions about this policy, contact us at:
+5. Account Logout:
+Logging out ends your session locally, but data remains stored until the account is deleted.
+
+6. Third-party Services:
+This app uses the following third-party services:
+- Firebase Authentication
+- Firebase Firestore
+- Firebase Cloud Messaging (FCM)
+- Railway (external backend server for notifications)
+
+Please review their privacy policies:
+- Firebase: https://firebase.google.com/support/privacy
+- Railway: https://railway.app/legal/privacy
+
+7. Contact Us:
+If you have any questions or concerns, please contact:
 Email: o.haroon111@gmail.com
 Phone: +20 1154060470
 
@@ -47,7 +67,7 @@ View the online version at:
 https://osamaaboharoon.github.io/chatapp-privacy-policy/
 
 By using ChatApp, you agree to this privacy policy.
-            ''', style: TextStyle(fontSize: 16, height: 1.5)),
+''', style: TextStyle(fontSize: 16, height: 1.5)),
         ),
       ),
     );

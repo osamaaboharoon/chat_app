@@ -2,6 +2,7 @@ import 'package:chat_app/models/message.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+// 💬 ChatBuble: فقاعة الرسالة الخاصة بالمستخدم الحالي
 class ChatBuble extends StatelessWidget {
   const ChatBuble({super.key, required this.message});
   final Message message;
@@ -57,6 +58,7 @@ class ChatBuble extends StatelessWidget {
   }
 }
 
+// 💬 ChatBubleForFriend: فقاعة الرسالة الخاصة بالطرف الآخر
 class ChatBubleForFriend extends StatelessWidget {
   const ChatBubleForFriend({super.key, required this.message});
   final Message message;

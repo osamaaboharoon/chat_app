@@ -1,11 +1,13 @@
 import 'package:chat_app/helper/constants.dart';
+import 'package:chat_app/helper/fcm.dart';
+import 'package:chat_app/helper/show_snak_bar.dart';
 import 'package:chat_app/pages/WhatsAppHomePage.dart';
 import 'package:chat_app/pages/login_page.dart';
 import 'package:chat_app/widgts/custom_button.dart';
 import 'package:chat_app/widgts/custom_form_text_field.dart';
-import 'package:chat_app/helper/show_snak_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -21,7 +23,7 @@ class _ResgisterPageState extends State<ResgisterPage> {
   String? password;
   String? confirmPassword;
   bool isLoading = false;
-  GlobalKey<FormState> formKey = GlobalKey();
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -83,17 +85,28 @@ class _ResgisterPageState extends State<ResgisterPage> {
 
                         setState(() => isLoading = true);
                         try {
+                          // احذف التوكن القديم (لو موجود)
+                          await FirebaseMessaging.instance.deleteToken();
+
+                          // أنشئ الحساب
                           final userCredential = await FirebaseAuth.instance
                               .createUserWithEmailAndPassword(
                                 email: email!,
                                 password: password!,
                               );
+
+                          // حفظ بيانات المستخدم في Firestore
                           await saveUserToFirestore(email!);
+
+                          // احفظ توكن FCM الجديد للمستخدم الجديد
+                          await saveFCMToken(email!);
+
                           showSnakBar(
                             context,
                             'Account created successfully!',
                             Colors.green,
                           );
+
                           Navigator.pushReplacementNamed(
                             context,
                             WhatsAppHomePage.id,
